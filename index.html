@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全网VIP视频万能解析 - 极简专业版</title>
+    <style>
+        /* --- 1. 基础 UI 与背景渲染 --- */
+        :root {
+            --main-blue: #00a1d6;
+            --bg-grid: #f4f7f9;
+        }
+        body {
+            margin: 0; padding: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            background-color: var(--bg-grid);
+            background-image: 
+                linear-gradient(rgba(0, 161, 214, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 161, 214, 0.08) 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        /* --- 2. 头部导航 --- */
+        header {
+            width: 90%; max-width: 1100px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 25px 0;
+        }
+        .logo { font-size: 22px; font-weight: bold; color: #333; }
+        .logo span { color: var(--main-blue); }
+        .nav-btn {
+            background: white; border: 1px solid #e0e0e0;
+            padding: 7px 18px; border-radius: 20px; cursor: pointer;
+            font-size: 13px; transition: 0.3s; margin-left: 10px;
+            text-decoration: none; color: inherit; display: inline-block;
+        }
+        .nav-btn:hover { background: #f8f9fa; border-color: var(--main-blue); color: var(--main-blue); }
+
+        /* --- 3. 解析输入区 --- */
+        .search-box {
+            width: 90%; max-width: 1000px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid white; border-radius: 50px;
+            padding: 8px 15px; display: flex; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 25px;
+        }
+        select {
+            border: 1px solid #ddd; background: #fff;
+            padding: 10px 15px; border-radius: 25px; outline: none; width: 160px;
+            cursor: pointer;
+        }
+        input {
+            flex: 1; border: none; background: transparent;
+            padding: 10px 20px; font-size: 15px; outline: none;
+        }
+        .btn-parse {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white; border: none; padding: 10px 25px;
+            border-radius: 25px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .btn-parse:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,114,255,0.3); }
+
+        /* --- 4. 播放器 --- */
+        .player-container {
+            width: 90%; max-width: 1000px; background: #000;
+            border-radius: 12px; overflow: hidden; border: 6px solid #fff;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15); aspect-ratio: 16 / 9;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* --- 5. 选项卡 --- */
+        .tabs-section {
+            width: 90%; max-width: 1000px;
+            background: white; border-radius: 12px; margin-top: 25px;
+            overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        }
+        .tab-nav { display: flex; background: #fcfcfc; border-bottom: 1px solid #f0f0f0; }
+        .tab-link {
+            padding: 15px 30px; cursor: pointer; font-size: 14px; color: #666;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-link.active {
+            color: var(--main-blue); border-bottom-color: var(--main-blue); background: #fff;
+        }
+        .tab-body { padding: 20px; min-height: 120px; font-size: 14px; color: #555; }
+        .history-item { 
+            padding: 10px; background: #f9f9f9; border-radius: 5px; 
+            margin-top: 10px; border-left: 4px solid var(--main-blue);
+            word-break: break-all;
+        }
+
+        footer { margin: 40px 0; color: #aaa; font-size: 12px; text-align: center; line-height: 2; }
+        footer a { color: var(--main-blue); text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">全网<span>VIP视频</span>解析</div>
+        <div class="top-nav">
+            <button class="nav-btn" onclick="alert('精彩短剧，即将上线！')">🎥 免费短剧</button>
+            <button class="nav-btn" onclick="alert('欢迎加入交流群：1189186')">💬 交流群</button>
+        </div>
+    </header>
+
+    <div class="search-box">
+        <select id="api_url">
+            <option value="https://jiexi.789jiexi.icu:4433/?={url}">线路1 (推荐)</option>
+            <option value="https://jx.hls.one/?={url}">线路2 (高速)</option>
+            <option value="https://jx.2s0.cn/player/?={url}">线路3</option>
+            <option value="https://jx.playerjy.com/?={url}">线路4</option>
+            <option value="https://bd.jx.cn/?={url}">线路5</option>
+            <option value="https://jx.xmflv.com/?={url}">线路6 (稳定)</option>
+            <option value="https://video.isyour.love/player/getplayer?={url}">线路7</option>
+            <option value="https://jx.973973.xyz/?={url}">线路8</option>
+            <option value="https://jx.m3u8.tv/jiexi/?={url}">线路9</option>
+            <option value="https://jx.xymp4.cc/?={url}">线路10</option>
+            <option value="https://jx.77flv.cc/?={url}">线路11</option>
+            <option value="https://www.ckplayer.vip/jiexi/?={url}">线路12</option>
+            <option value="https://www.pangujiexi.com/pangu/?={url}">线路13</option>
+            <option value="https://jx.mmkv.cn/tv.php?={url}">线路14</option>
+            <option value="https://www.pouyun.com/?={url}">线路15</option>
+            <option value="http://www.jzmhtt.com/zdy/vip/?={url}">线路16 (非HTTPS)</option>
+        </select>
+        <input type="text" id="video_url" placeholder="请粘贴视频链接 (如腾讯、优酷、爱奇艺等)...">
+        <button class="btn-parse" onclick="startParse()">⚡ 立即解析</button>
+    </div>
+
+    <div class="player-container">
+        <iframe id="video_iframe" src="about:blank" allowfullscreen="true"></iframe>
+    </div>
+
+    <div class="tabs-section">
+        <div class="tab-nav">
+            <div class="tab-link active" onclick="switchTab(0)">播放历史</div>
+            <div class="tab-link" onclick="switchTab(1)">使用教程</div>
+            <div class="tab-link" onclick="switchTab(2)">免责声明</div>
+        </div>
+        <div class="tab-body" id="tab_content">
+            <div id="history_list">
+                <p>🕒 最近解析时间：<span id="parse_time">从未解析</span></p>
+                <div class="history-item" id="history_info">暂无播放记录，快去粘贴链接解析吧！</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        问题反馈及最新网站请前往 <a href="javascript:void(0)" onclick="alert('请添加 QQ 群：1189186')">影视交流群 (QQ: 1189186)</a><br>
+        © 2026 某某导航 All Rights Reserved.<br>
+        访问量：14224次 | 访客数：5397人
+    </footer>
+
+    <script>
+        // 核心解析逻辑
+        function startParse() {
+            const api = document.getElementById('api_url').value;
+            const url = document.getElementById('video_url').value.trim();
+            const iframe = document.getElementById('video_iframe');
+
+            if (!url) {
+                alert("请先输入视频地址！");
+                return;
+            }
+
+            // 拼接地址并加载
+            iframe.src = api + encodeURIComponent(url);
+
+            // 更新历史记录状态
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('parse_time').innerText = timeStr;
+            document.getElementById('history_info').innerHTML = "<b>当前播放：</b>" + url;
+        }
+
+        // 选项卡内容配置
+        const tabContents = [
+            null, // 历史记录动态生成，不在这里写死
+            `<div><b>💡 使用教程：</b><br><br>1. 进入各大视频官网（腾讯/爱奇艺/优酷等）。<br>2. 找到想看的视频，复制浏览器顶部的地址栏链接。<br>3. 回到本站，将链接粘贴进中间输入框。<br>4. 默认推荐线路1，如无法播放请尝试切换线路。</div>`,
+            `<div><b>⚖️ 免责声明：</b><br><br>本站仅供编程技术交流学习，视频资源均来自第三方接口，本站不存储、不录制、不提供任何视频内容。如有侵权行为请联系接口方处理。</div>`
+        ];
+
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab-link');
+            const container = document.getElementById('tab_content');
+            
+            tabs.forEach((tab, i) => tab.classList.toggle('active', i === index));
+            
+            if(index === 0) {
+                // 如果切回历史记录，保持原有内容或刷新
+                container.innerHTML = `<div>🕒 最近解析时间：<span id="parse_time">${document.getElementById('parse_time').innerText}</span></div><div class="history-item">${document.getElementById('history_info').innerHTML}</div>`;
+            } else {
+                container.innerHTML = tabContents[index];
+            }
+        }
+    </script>
+</body>
+</html>
